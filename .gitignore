@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 node_modules
+vite.config.js
+eslint.config.js
+README.md 
+App.css
