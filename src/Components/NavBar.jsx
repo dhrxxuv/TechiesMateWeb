@@ -1,4 +1,7 @@
+import { useSelector } from "react-redux";
+
 export const NavBar = () => {
+    const user = useSelector((store)=>store.user)
     return (
       <div className="w-full fixed top-0 left-0 z-50 bg-base-300 shadow-sm px-4">
         <div className="navbar flex justify-between w-full">
@@ -8,7 +11,9 @@ export const NavBar = () => {
           </div>
   
           {/* Right - Dropdown */}
-          <div className="flex items-center gap-2">
+        {
+            user && 
+            <div className="flex items-center gap-2">
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
@@ -23,6 +28,9 @@ export const NavBar = () => {
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
               >
                 <li>
+                    <p>hi {user.firstName}</p>
+                </li>
+                <li>
                   <a className="justify-between">
                     Profile
                     <span className="badge">New</span>
@@ -33,6 +41,7 @@ export const NavBar = () => {
               </ul>
             </div>
           </div>
+        }
         </div>
       </div>
     );
