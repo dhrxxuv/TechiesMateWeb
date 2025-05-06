@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { removeUser } from "../Redux/userSlice";
 import axios from "axios";
 import { baseApi } from "../utils/api";
+import { removeFeed } from "../Redux/feedSlice";
 
 export const NavBar = () => {
     const navigate = useNavigate()
@@ -14,6 +15,7 @@ export const NavBar = () => {
           withCredentials:true
         })  
         dispatch(removeUser())
+        dispatch(removeFeed())
         navigate('/login')
 
       }catch(err){
@@ -37,7 +39,7 @@ export const NavBar = () => {
                 <div className="w-10 rounded-full">
                   <img
                     alt="User profile"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    src={user.photoUrl}
                   />
                 </div>
               </div>
