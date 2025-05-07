@@ -29,7 +29,7 @@ const Feed = () => {
   }, [])
 
   return (
-    <div className="p-4">
+    <div className="p-4 " >
       <h1 className="text-xl font-bold">Feed</h1>
       {error && <p className="text-red-500 mt-2">{error}</p>}
 

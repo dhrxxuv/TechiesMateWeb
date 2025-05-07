@@ -4,6 +4,7 @@ import { removeUser } from "../Redux/userSlice";
 import axios from "axios";
 import { baseApi } from "../utils/api";
 import { removeFeed } from "../Redux/feedSlice";
+import { removeConnection } from "../Redux/connectionSlic";
 
 export const NavBar = () => {
     const navigate = useNavigate()
@@ -16,6 +17,7 @@ export const NavBar = () => {
         })  
         dispatch(removeUser())
         dispatch(removeFeed())
+        dispatch(removeConnection())
         navigate('/login')
 
       }catch(err){
@@ -56,7 +58,9 @@ export const NavBar = () => {
                     <span className="badge">New</span>
                   </Link>
                 </li>
-                <li><a>Settings</a></li>
+                <li><Link to='/Connection'>
+                  Connection
+                 </Link></li>
                 <li onClick={HandleLogOut}><Link>Logout</Link></li>
               </ul>
             </div>
