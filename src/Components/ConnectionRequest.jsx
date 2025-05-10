@@ -2,40 +2,46 @@ import axios from "axios";
 import { baseApi } from "../utils/api";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addConnection } from "../Redux/connectionSlic";
+import { addRequests, removeRequest } from "../Redux/requestSlice";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Connection = () => {
+const ConnectionRequest = () => {
   const dispatch = useDispatch();
-  const connections = useSelector((store) => store.Connection || []);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const requests = useSelector((store) => store.request || []);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get(`${baseApi}/user/connections`, {
+      const res = await axios.get(`${baseApi}/user/request`, {
         withCredentials: true,
       });
-      dispatch(addConnection(res.data.data));
+      dispatch(addRequests(res.data.data));
     } catch (err) {
-      console.log("Error fetching connections:", err?.response?.data);
+      console.log("Error fetching requests:", err?.response?.data);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRequestAction = async (requestId, status) => {
+    console.log("hii",requestId)
+    try {
+      await axios.post(
+        `${baseApi}/request/review/${status}/${requestId}`,
+        {}, 
+        { withCredentials: true }
+      );
+      dispatch(removeRequest(requestId))
+    } catch (err) {
+      //console.log(`Error ${status}ing request:`, err?.response?.data);
+      alert(`Failed to ${status} request`);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
-  };
-
-  const closeModal = () => {
-    setSelectedImage(null);
-  };
 
   if (isLoading) {
     return (
@@ -48,7 +54,7 @@ const Connection = () => {
     );
   }
 
-  if (connections.length === 0) {
+  if (requests.length === 0) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
         <motion.div
@@ -72,10 +78,10 @@ const Connection = () => {
             />
           </svg>
           <h1 className="text-3xl font-extrabold text-white mb-4">
-            No Connections Yet
+            No Connection Requests
           </h1>
           <p className="text-pink-200 mb-8">
-            Start connecting with people to see them here.
+            You have no pending connection requests.
           </p>
           <button className="bg-gradient-to-r from-pink-500 to-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
             Find People
@@ -94,108 +100,61 @@ const Connection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl font-extrabold text-white sm:text-6xl lg:text-7xl tracking-tight">
-            Your Network
+          <h1 className="text-5xl font-extrabold sm:text-6xl lg:text-7xl tracking-tight">
+            Connection Requests
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-xl">
-            Connect with your professional circle
+          <p className="mt-6 max-w-2xl mx-auto text-xl ">
+            Manage your pending connection requests
           </p>
         </motion.div>
 
         <div className="flex overflow-x-auto space-x-6 pb-6 scrollbar-thin scrollbar-thumb-pink-500 scrollbar-track-indigo-900">
-          {connections.map((connection, index) => (
+          {requests.map((request, index) => (
             <motion.div
-              key={connection._id || index}
+              key={request._id || index}
               initial={{ opacity: 0, x: 100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="minDST-w-[300px] bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-white/50"
+              className="min-w-[300px] bg-white/10 backdrop-blur-lg rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-white/50"
             >
               <div className="p-8">
                 <motion.div
                   whileHover={{ scale: 1.1, rotate: 2 }}
                   className="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-blue-500/50 shadow-lg cursor-pointer"
-                  onClick={() =>
-                    handleImageClick(connection.photoUrl || "/default-avatar.png")
-                  }
                 >
                   <img
-                    src={connection.photoUrl || "/default-avatar.png"}
-                    alt={`${connection.firstName} ${connection.lastName}`}
+                    src = {request.fromUserId.photoUrl} // Assuming no photoUrl in data; update if available
+                    alt={`${request.fromUserId.firstName} ${request.fromUserId.lastName}`}
                     className="w-full h-full object-cover"
                   />
                 </motion.div>
                 <div className="mt-6 text-center">
                   <h2 className="text-2xl font-bold text-white">
-                    {connection.firstName} {connection.lastName}
+                    {request.fromUserId.firstName} {request.fromUserId.lastName}
                   </h2>
-                  {connection.position && (
-                    <p className="text-pink-200 mt-2">{connection.position}</p>
-                  )}
+                  <p className="mt-2">{request.fromUserId.about}</p>
                 </div>
               </div>
-              <div className="bg-white/5 px-6 py-4 flex justify-center">
+              <div className="bg-white/5 px-6 py-4 flex justify-center space-x-4">
                 <button
-                  className="bg-green-600 text-white px-8 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
-                  onClick={() => {
-                    alert("Buy Subscription to chat");
-                  }}
+                  className="bg-green-600 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  onClick={() => handleRequestAction(request.fromUserId._id, "accepted")}
                 >
-                  Message
+                  Accept
+                </button>
+                <button
+                  className="bg-red-600 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+                  onClick={() => handleRequestAction(request.fromUserId._id, "rejected")}
+                >
+                  Reject
                 </button>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
-
-      {/* Image Modal */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-            onClick={closeModal}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              className="relative max-w-4xl w-full"
-            >
-              <button
-                onClick={closeModal}
-                className="absolute -top-12 right-0 text-white hover:text-pink-300 focus:outline-none"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <img
-                src={selectedImage}
-                alt="Profile preview"
-                className="w-full h-auto max-h-[80vh] object-contain rounded-lg border-2 border-pink-500/50"
-                onClick={(e) => e.stopPropagation()}
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
 
-export default Connection;
+export default ConnectionRequest;
