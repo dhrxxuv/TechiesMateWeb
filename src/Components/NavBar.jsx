@@ -25,53 +25,83 @@ export const NavBar = () => {
       }
     }
     return (
-      <div className="w-full fixed top-0 left-0 z-50 bg-base-300 shadow-sm px-4">
-        <div className="navbar flex justify-between w-full">
-          {/* Left - TechiesMate */}
-          <div className="flex items-center">
-            <Link to = '/' className="btn btn-ghost text-xl px-0">TechiesMate</Link>
-          </div>
-  
-          {/* Right - Dropdown */}
-        {
-            user && 
-            <div className="flex items-center gap-2">
+    <div className="w-full fixed top-0 left-0 z-50 bg-gray-50 text-gray-900 shadow-md">
+      <div className="navbar container mx-auto px-4 py-3">
+        {/* Left - TechiesMate */}
+        <div className="flex-1">
+          <Link
+            to="/"
+            className="btn btn-ghost text-2xl font-bold text-gray-900 hover:bg-gray-200 shimmer transition-transform hover:scale-105"
+          >
+            TechiesMate
+          </Link>
+        </div>
+
+        {/* Right - User Dropdown */}
+        {user && (
+          <div className="flex items-center gap-3">
             <div className="dropdown dropdown-end">
-              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
+              <div
+                tabIndex={0}
+                role="button"
+                aria-label={`User profile menu for ${user.firstName}`}
+                className="btn btn-ghost btn-circle avatar relative shimmer"
+              >
+                <div className="w-10 rounded-full overflow-hidden ring-2 ring-blue-500">
                   <img
-                    alt="User profile"
+                    alt={`${user.firstName}'s profile`}
                     src={user.photoUrl}
+                    className="object-cover w-full h-full"
                   />
                 </div>
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                className="menu menu-md dropdown-content bg-white text-gray-900 rounded-box mt-2 w-64 p-3 shadow-lg transform transition-all duration-300 ease-in-out"
               >
-                <li>
-                    <p>hi {user.firstName}</p>
+                <li className=" py-2 text-sm font-medium text-gray-700">
+                  <span>Hi,{user.firstName}</span>
                 </li>
                 <li>
-                  <Link to = '/profile'className="justify-between">
+                  <Link
+                    to="/profile"
+                    className="flex justify-between items-center py-2 px-3 hover:bg-gray-100 shimmer transition-transform hover:translate-x-1"
+                  >
                     Profile
-                    <span className="badge">New</span>
+                    <span className="badge badge-primary bg-blue-500 text-white">New</span>
                   </Link>
                 </li>
-                <li><Link to='/Connection'>
-                  Connection
-                 </Link></li>
+                <li>
+                  <Link
+                    to="/Connection"
+                    className="py-2 px-3 hover:bg-gray-100 shimmer transition-transform hover:translate-x-1"
+                  >
+                    Connection
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/Connection-Request"
+                    className="py-2 px-3 hover:bg-gray-100 shimmer transition-transform hover:translate-x-1"
+                  >
+                    Request
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={HandleLogOut}
+                    className="py-2 px-3 text-left bg-red-600 hover:bg-red-800 text-white transition-colors duration-200 rounded-md"
+                  >
+                    Logout
+                  </button>
 
-                 <li><Link to='/Connection-Request'>
-                  Request
-                 </Link></li>
-                <li onClick={HandleLogOut}><Link>Logout</Link></li>
+                </li>
               </ul>
             </div>
           </div>
-        }
-        </div>
+        )}
       </div>
+    </div>
     );
   };
   

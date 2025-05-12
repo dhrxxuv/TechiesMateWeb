@@ -1,45 +1,59 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { baseApi } from '../utils/api'
-import { useDispatch, useSelector } from 'react-redux'
-import { addToFeed } from '../Redux/feedSlice'
-import { UserCard } from './userCard'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { baseApi } from '../utils/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToFeed } from '../Redux/feedSlice';
+import { UserCard } from './UserCard';
 
 const Feed = () => {
-  const [error, setError] = useState("")
-  const dispatch = useDispatch()
-  const userFeed = useSelector((store) => store.feed)
+  const [error, setError] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const dispatch = useDispatch();
+  const userFeed = useSelector((store) => store.feed);
 
   const getFeed = async () => {
     if (userFeed?.user?.length > 0) return;
 
     try {
       const res = await axios.get(`${baseApi}/user/feed`, {
-        withCredentials: true
-      })
-
-      dispatch(addToFeed(res.data))  
+        withCredentials: true,
+      });
+      dispatch(addToFeed(res.data));
     } catch (err) {
-      setError(err?.response?.data?.message || "Something went wrong")
+      setError(err?.response?.data?.message || 'Something went wrong');
     }
-  }
+  };
 
   useEffect(() => {
-    getFeed()
-  }, [])
+    getFeed();
+  }, []);
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const currentUser = userFeed?.user?.[currentIndex];
 
   return (
-    <div className="p-4 " >
-      <h1 className="text-xl font-bold">Feed</h1>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+    <div className="w-full min-h-screen flex items-center justify-center bg-gray-50 p-4 sm:p-6 lg:p-8">
+      {error && (
+        <p className="text-red-600 text-lg font-semibold animate-pulse">
+          {error}
+        </p>
+      )}
 
-      <ul className="mt-4 space-y-4">
-        {userFeed?.user?.map((item, idx) => (
-          <UserCard key={idx} user={item} />
-        ))}
-      </ul>
+      {currentUser ? (
+        <div className="animate-slide-up">
+          <UserCard user={currentUser} onNext={handleNext} />
+        </div>
+      ) : (
+        <p className="text-gray-700 text-xl font-semibold animate-fade-in">
+          No more profiles!
+        </p>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Feed
+export default Feed;
