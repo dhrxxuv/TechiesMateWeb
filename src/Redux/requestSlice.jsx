@@ -1,20 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const requestSlice = createSlice({
-    name:"requests",
-    initialState:[],
-    reducers:{
-        addRequests:(state,action)=>{
-            return action.payload
+    name: "requests",
+    initialState: { requests: [] },
+    reducers: {
+        addRequests: (state, action) => {
+            state.requests = action.payload;
         },
-        removeRequest:(state,action)=>{
-            const newArray = state.filter((user)=>user._id !== action.payload)
-            return newArray
+        removeRequest: (state, action) => {
+            state.requests = state.requests.filter(
+                (request) => request.fromUserId._id !== action.payload
+            );
         }
     }
-})
+});
 
-
-export const {addRequests,removeRequest} = requestSlice.actions
-
-export default requestSlice.reducer
+export const { addRequests, removeRequest } = requestSlice.actions;
+export default requestSlice.reducer;

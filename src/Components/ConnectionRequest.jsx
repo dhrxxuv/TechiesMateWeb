@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const ConnectionRequest = () => {
   const dispatch = useDispatch();
-  const requests = useSelector((store) => store.request || []);
+const { requests } = useSelector((store) => store.request || { requests: [] });
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
@@ -129,7 +129,7 @@ const ConnectionRequest = () => {
                   />
                 </motion.div>
                 <div className="mt-6 text-center">
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-2xl font-bold ">
                     {request.fromUserId.firstName} {request.fromUserId.lastName}
                   </h2>
                   <p className="mt-2">{request.fromUserId.about}</p>
