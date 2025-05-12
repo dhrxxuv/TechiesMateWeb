@@ -11,6 +11,7 @@ const Connection = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = async () => {
     try {
       setIsLoading(true);
@@ -94,7 +95,7 @@ const Connection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl font-extrabold text-white sm:text-6xl lg:text-7xl tracking-tight">
+          <h1 className="text-5xl font-extrabold text-black sm:text-6xl lg:text-7xl tracking-tight">
             Your Network
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-xl">
@@ -126,7 +127,7 @@ const Connection = () => {
                   />
                 </motion.div>
                 <div className="mt-6 text-center">
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-2xl font-bold text-black">
                     {connection.firstName} {connection.lastName}
                   </h2>
                   {connection.position && (
