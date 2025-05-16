@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { baseApi } from '../utils/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToFeed } from '../Redux/feedSlice';
-import { UserCard } from './UserCard';
+import { UserCard } from './userCard';
 
 const Feed = () => {
   const [error, setError] = useState('');
@@ -48,9 +48,7 @@ const Feed = () => {
           <UserCard user={currentUser} onNext={handleNext} />
         </div>
       ) : (
-        <p className="text-gray-700 text-xl font-semibold animate-fade-in">
-          No more profiles!
-        </p>
+        <div className="skeleton w-[95vw] max-w-md h-[85vh]"></div>
       )}
     </div>
   );

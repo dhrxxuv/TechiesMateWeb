@@ -22,16 +22,16 @@ export const UserCard = ({ user, onNext }) => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3 }}
-      className="relative w-[95vw] max-w-md h-[85vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-100"
+      className="relative w-full max-w-md h-[85vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-100 mx-auto sm:w-[95vw]"
     >
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent z-10 pointer-events-none" />
-      
+
       {/* User Image */}
       <div className="relative h-[65%] w-full overflow-hidden">
         <motion.img
@@ -42,30 +42,31 @@ export const UserCard = ({ user, onNext }) => {
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.5 }}
         />
-        
-        {/* User Badge */}
-        <motion.div 
+
+        {/* Badge with Name, Age, Gender */}
+        <motion.div
           className="absolute bottom-5 left-5 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-xl text-lg font-medium shadow-lg z-20"
           whileHover={{ scale: 1.03 }}
         >
           <div className="flex items-center space-x-2">
             <span className="font-bold">{user.firstName}</span>
+            <span className="text-sm opacity-80">({user.gender || 'Other'})</span>
             <span className="w-1 h-1 bg-white rounded-full" />
             <span>{user.age}</span>
           </div>
         </motion.div>
       </div>
-      
-      {/* User Info */}
-      <div className="flex-1 p-6 flex flex-col">
-        {/* About Section */}
-        <motion.div 
-          className="flex-1 overflow-y-auto"
+
+      {/* Info Section */}
+      <div className="flex-1 p-5 sm:p-6 flex flex-col">
+        {/* About */}
+        <motion.div
+          className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300"
           initial={{ y: 20 }}
           animate={{ y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <p className="text-gray-700 text-lg leading-relaxed line-clamp-4 hover:line-clamp-none transition-all duration-200">
+          <p className="text-gray-700 text-base sm:text-lg leading-relaxed line-clamp-4 hover:line-clamp-none transition-all duration-200">
             {user.about || "This user hasn't written a bio yet."}
           </p>
 
@@ -79,7 +80,7 @@ export const UserCard = ({ user, onNext }) => {
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * idx }}
+                    transition={{ delay: 0.05 * idx }}
                     className="inline-block bg-gradient-to-r from-pink-100 to-purple-100 text-pink-700 px-3 py-1 rounded-full text-xs font-medium shadow-sm"
                   >
                     {skill}
@@ -90,8 +91,8 @@ export const UserCard = ({ user, onNext }) => {
           )}
         </motion.div>
 
-        {/* Action Buttons */}
-        <motion.div 
+        {/* Buttons */}
+        <motion.div
           className="flex justify-between mt-6 space-x-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -105,7 +106,7 @@ export const UserCard = ({ user, onNext }) => {
             <span className="text-xl mr-2">✖</span>
             <span>Pass</span>
           </motion.button>
-          
+
           <motion.button
             onClick={() => handleRequest('interested', user._id)}
             whileTap={{ scale: 0.95 }}

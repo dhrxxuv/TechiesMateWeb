@@ -42,7 +42,7 @@ const userData = useSelector((store)=>store.user)
         <div className="mt-10">
             <Outlet />
         </div>
-        <Footer/>
+       {/* // <Footer/> */}
         
     </div>
   )
