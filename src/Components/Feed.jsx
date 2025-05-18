@@ -8,20 +8,31 @@ import { UserCard } from './userCard';
 const Feed = () => {
   const [error, setError] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [noMoreUsers, setNoMoreUsers] = useState(false);
 
   const dispatch = useDispatch();
   const userFeed = useSelector((store) => store.feed);
 
   const getFeed = async () => {
-    if (userFeed?.user?.length > 0) return;
+    setIsLoading(true);
+    setError('');
+    setNoMoreUsers(false);
 
     try {
       const res = await axios.get(`${baseApi}/user/feed`, {
         withCredentials: true,
       });
-      dispatch(addToFeed(res.data));
+      
+      if (res.data.user.length === 0) {
+        setNoMoreUsers(true);
+      } else {
+        dispatch(addToFeed(res.data));
+      }
     } catch (err) {
       setError(err?.response?.data?.message || 'Something went wrong');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -30,7 +41,12 @@ const Feed = () => {
   }, []);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => prev + 1);
+    if (currentIndex + 1 >= userFeed?.user?.length) {
+      // Reached end of current feed, try to fetch more
+      getFeed();
+    } else {
+      setCurrentIndex((prev) => prev + 1);
+    }
   };
 
   const currentUser = userFeed?.user?.[currentIndex];
@@ -43,12 +59,22 @@ const Feed = () => {
         </p>
       )}
 
-      {currentUser ? (
+      {isLoading ? (
+        <div className="skeleton w-[95vw] max-w-md h-[85vh]"></div>
+      ) : noMoreUsers || !currentUser ? (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-4">No more users to show</h2>
+          <button 
+            onClick={getFeed}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+          >
+            Refresh
+          </button>
+        </div>
+      ) : (
         <div className="animate-slide-up">
           <UserCard user={currentUser} onNext={handleNext} />
         </div>
-      ) : (
-        <div className="skeleton w-[95vw] max-w-md h-[85vh]"></div>
       )}
     </div>
   );
