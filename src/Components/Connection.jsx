@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../Redux/connectionSlic";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router";
 
 const Connection = () => {
   const dispatch = useDispatch();
@@ -130,14 +131,16 @@ const Connection = () => {
                     <p className="text-gray-500 mt-1">{connection.position}</p>
                   )}
                 </div>
-                <button
-                  className="mt-4 w-max bg-green-600 text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition"
-                  onClick={() => {
-                    alert("Buy Subscription to chat");
-                  }}
-                >
-                  Message
-                </button>
+                <Link to={`/chat/${connection._id}`}>
+                    <button
+                      className="mt-4 w-max bg-green-600 text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition"
+                      onClick={() => {
+                        alert("Buy Subscription to chat");
+                      }}
+                    >
+                      Message
+                    </button>
+                  </Link>
               </div>
             </motion.div>
           ))}
