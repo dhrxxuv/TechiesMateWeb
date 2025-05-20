@@ -1,3 +1,3 @@
-export const baseApi = 'http://localhost:3000';
+// export const baseApi = 'http://localhost:3000';
 
-// export const baseApi = '/api';
+export const baseApi = '/api';
