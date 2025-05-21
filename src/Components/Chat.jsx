@@ -5,13 +5,24 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { baseApi } from "../utils/api";
 
+let socket = null;
+
 const Chat = () => {
   const { targetUserId } = useParams();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const user = useSelector((store) => store.user);
   const userId = user?._id;
-  const socketRef = useRef(null);
+
+  const endOfMessagesRef = useRef(null);
+
+  const Connections = useSelector((store)=>store.Connection)
+
+  const toUser =  Connections.filter((connection)=>connection._id===targetUserId)
+  console.log("hi",toUser)
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const fetchChatMessages = async () => {
     try {
@@ -39,19 +50,23 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
     if (!userId) return;
 
-    socketRef.current = createSocketConnection();
+    socket = createSocketConnection();
 
-    socketRef.current.emit("joinChat", {
+    socket.emit("joinChat", {
       firstName: user.firstName,
       userId,
       targetUserId,
     });
 
-    socketRef.current.on("messageReceived", ({ sender, text, time }) => {
-      setMessages((messages) => [
-        ...messages,
+    socket.on("messageReceived", ({ sender, text, time }) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
         {
           sender,
           text,
@@ -64,14 +79,14 @@ const Chat = () => {
     });
 
     return () => {
-      socketRef.current.disconnect();
+      socket.disconnect();
     };
   }, [userId, targetUserId]);
 
   const sendMessage = () => {
-    if (input.trim() === "") return;
+    if (input.trim() === "" || !socket) return;
 
-    socketRef.current.emit("sendMessage", {
+    socket.emit("sendMessage", {
       firstName: user.firstName,
       userId,
       targetUserId,
@@ -82,21 +97,23 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen p-4 bg-gray-100">
-      <h2 className="text-xl font-semibold mb-4 text-center">Chat</h2>
+    <div className="flex flex-col h-screen p-2 sm:p-4 bg-gray-100">
+      <h2 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-4 text-center">Chat {toUser[0].firstName} {toUser[0].lastName}</h2>
 
-      <div className="flex-1 overflow-y-auto mb-4 p-4 bg-white rounded shadow space-y-4">
+      <div className="flex-1 overflow-y-auto scrollbar-none mb-2 sm:mb-4 p-2 sm:p-4 bg-white rounded shadow space-y-4">
         {messages.map((msg, index) => {
           const isSender = msg.sender === user.firstName;
 
           return (
             <div
               key={index}
-              className={`flex flex-col ${isSender ? "items-end" : "items-start"}`}
+              className={`flex flex-col ${
+                isSender ? "items-end" : "items-start"
+              }`}
             >
-              <div className="text-sm text-gray-600 mb-1">{msg.sender}</div>
+              <div className="text-xs sm:text-sm text-gray-600 mb-1">{msg.sender}</div>
               <div
-                className={`px-4 py-2 rounded-lg max-w-xs break-words ${
+                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg max-w-[75%] break-words ${
                   isSender
                     ? "bg-blue-600 text-white rounded-br-none"
                     : "bg-green-200 text-black rounded-bl-none"
@@ -104,23 +121,24 @@ const Chat = () => {
               >
                 {msg.text}
               </div>
-              <div className="text-xs text-gray-400 mt-1">{msg.time}</div>
+              <div className="text-[10px] sm:text-xs text-gray-400 mt-1">{msg.time}</div>
             </div>
           );
         })}
+        <div ref={endOfMessagesRef}></div>
       </div>
 
-      <div className="flex">
+      <div className="flex w-full">
         <input
           type="text"
-          className="flex-1 p-2 rounded-l border border-gray-300 focus:outline-none"
+          className="flex-1 p-2 text-sm sm:text-base rounded-l border border-gray-300 focus:outline-none"
           placeholder="Type your message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 text-sm sm:text-base rounded-r hover:bg-blue-700"
           onClick={sendMessage}
         >
           Send

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../Redux/connectionSlic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router";
+import { Link } from "react-router"; // fixed import
 
 const Connection = () => {
   const dispatch = useDispatch();
@@ -40,27 +40,24 @@ const Connection = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-transparent border-t-pink-500 border-b-indigo-500"></div>
-          <div className="absolute inset-0 animate-pulse rounded-full h-16 w-16 bg-gradient-to-r from-pink-500 to-indigo-500 opacity-20"></div>
-        </div>
+      <div className="flex justify-center items-center h-screen bg-white">
+        <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (connections.length === 0) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50 px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/10 backdrop-blur-lg p-10 rounded-3xl shadow-2xl text-center max-w-lg border border-white/20"
+          className="bg-white shadow-xl rounded-2xl p-10 max-w-lg text-center border border-gray-200"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-20 w-20 mx-auto text-pink-300 mb-6"
+            className="h-20 w-20 mx-auto text-blue-400 mb-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -72,13 +69,9 @@ const Connection = () => {
               d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
             />
           </svg>
-          <h1 className="text-3xl font-extrabold text-white mb-4">
-            No Connections Yet
-          </h1>
-          <p className="text-pink-200 mb-8">
-            Start connecting with people to see them here.
-          </p>
-          <button className="bg-gradient-to-r from-pink-500 to-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300">
+          <h1 className="text-2xl font-semibold text-gray-800 mb-3">No Connections Yet</h1>
+          <p className="text-gray-500 mb-6">Start connecting with people to see them here.</p>
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition">
             Find People
           </button>
         </motion.div>
@@ -87,18 +80,16 @@ const Connection = () => {
   }
 
   return (
-    <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-indigo-100 to-pink-100">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-5xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: -50 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
         >
-          <h1 className="text-4xl font-extrabold text-gray-900">Your Network</h1>
-          <p className="mt-4 text-lg text-gray-600">
-            Connect with your professional circle
-          </p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">Your Network</h1>
+          <p className="mt-3 text-gray-500">Connect with your professional circle</p>
         </motion.div>
 
         <div className="flex flex-col gap-6">
@@ -108,13 +99,11 @@ const Connection = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="flex bg-white/80 backdrop-blur-md rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-2xl transition duration-300"
+              className="flex flex-col sm:flex-row items-center sm:items-start bg-white p-6 rounded-lg shadow-md border border-gray-200"
             >
               <div
-                className="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-400 shadow-md cursor-pointer"
-                onClick={() =>
-                  handleImageClick(connection.photoUrl || "/default-avatar.png")
-                }
+                className="w-28 h-28 flex-shrink-0 rounded-full overflow-hidden border-4 border-blue-400 shadow-md cursor-pointer"
+                onClick={() => handleImageClick(connection.photoUrl || "/default-avatar.png")}
               >
                 <img
                   src={connection.photoUrl || "/default-avatar.png"}
@@ -122,25 +111,23 @@ const Connection = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="ml-6 flex flex-col justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
+              <div className="sm:ml-6 mt-4 sm:mt-0 flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
+                <div className="text-center sm:text-left">
+                  <h2 className="text-xl font-semibold text-gray-800 truncate max-w-xs">
                     {connection.firstName} {connection.lastName}
                   </h2>
                   {connection.position && (
-                    <p className="text-gray-500 mt-1">{connection.position}</p>
+                    <p className="text-gray-500 text-sm mt-1">{connection.position}</p>
                   )}
                 </div>
-                <Link to={`/chat/${connection._id}`}>
-                    <button
-                      className="mt-4 w-max bg-green-600 text-white px-6 py-2 rounded-full font-semibold hover:scale-105 transition"
-                      onClick={() => {
-                        alert("Buy Subscription to chat");
-                      }}
-                    >
-                      Message
-                    </button>
-                  </Link>
+                <Link to={`/chat/${connection._id}`} className="mt-4 sm:mt-0 sm:ml-auto">
+                  <button
+                    className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full transition shadow-md"
+                    onClick={() => alert("Buy Subscription to chat")}
+                  >
+                    Message
+                  </button>
+                </Link>
               </div>
             </motion.div>
           ))}
@@ -154,38 +141,27 @@ const Connection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
             onClick={closeModal}
           >
             <motion.div
-              initial={{ scale: 0.8 }}
+              initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
+              exit={{ scale: 0.9 }}
               className="relative max-w-4xl w-full"
             >
               <button
                 onClick={closeModal}
-                className="absolute -top-12 right-0 text-white hover:text-pink-300 focus:outline-none"
+                className="absolute -top-12 right-0 text-white hover:text-red-300"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
               <img
                 src={selectedImage}
                 alt="Profile preview"
-                className="w-full h-auto max-h-[80vh] object-contain rounded-lg border-2 "
+                className="w-full max-h-[80vh] object-contain rounded-lg border"
                 onClick={(e) => e.stopPropagation()}
               />
             </motion.div>

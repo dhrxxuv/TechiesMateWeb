@@ -43,7 +43,7 @@ export const UserCard = ({ user, onNext }) => {
           exit={{ 
             opacity: 0, 
             scale: 0.9,
-            x: window.innerWidth * 0.5, // Faster exit
+            x: window.innerWidth * 0.5,
             transition: { duration: 0.2 } 
           }}
           transition={{ 
@@ -52,7 +52,31 @@ export const UserCard = ({ user, onNext }) => {
             damping: 20,
             duration: 0.3 
           }}
-          className="relative w-full max-w-md h-[85vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-100 mx-auto sm:w-[95vw]"
+          className="
+            relative 
+            w-full 
+            max-w-md 
+            h-[85vh] 
+            bg-white 
+            rounded-3xl 
+            shadow-2xl 
+            overflow-hidden 
+            flex 
+            flex-col 
+            border 
+            border-gray-100 
+            mx-auto 
+            sm:w-[95vw]
+            cursor-pointer
+            transform
+            transition-transform
+            duration-300
+            hover:scale-[1.02]
+            hover:shadow-[0_20px_50px_rgba(139,92,246,0.3)]
+            sm:h-[80vh]
+            xs:max-w-[95vw]
+            xs:h-[75vh]
+          "
         >
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent z-10 pointer-events-none" />

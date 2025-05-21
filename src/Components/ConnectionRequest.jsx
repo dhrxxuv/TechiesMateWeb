@@ -41,29 +41,29 @@ const ConnectionRequest = () => {
     fetchData();
   }, []);
 
+  // Using shimmer and CSS styles from Connection component
+  const shimmerBG = "bg-gray-50";
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-pink-500 border-b-indigo-500 border-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-500 opacity-20 rounded-full animate-pulse"></div>
-        </div>
+      <div className="flex justify-center items-center h-screen bg-gray-50">
+        <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (requests.length === 0) {
     return (
-      <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950">
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-50 px-6">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white/10 backdrop-blur-xl p-10 rounded-3xl shadow-2xl text-center max-w-lg border border-white/20"
+          className="bg-white shadow-xl rounded-2xl p-10 max-w-lg text-center border border-gray-200"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-20 w-20 mx-auto text-pink-300 mb-6"
+            className="h-20 w-20 mx-auto text-blue-400 mb-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -75,9 +75,9 @@ const ConnectionRequest = () => {
               d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
             />
           </svg>
-          <h1 className="text-3xl font-bold text-white mb-3">No Requests</h1>
-          <p className="text-pink-200 mb-6">You don’t have any pending requests right now.</p>
-          <button className="bg-gradient-to-r from-pink-600 to-indigo-600 px-6 py-2 rounded-full text-white font-semibold hover:scale-105 transition-transform">
+          <h1 className="text-2xl font-semibold text-gray-800 mb-3">No Requests</h1>
+          <p className="text-gray-500 mb-6">You don’t have any pending connection requests.</p>
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition">
             Find People
           </button>
         </motion.div>
@@ -86,57 +86,56 @@ const ConnectionRequest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950 py-16 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-3">
             Connection Requests
           </h1>
-          <p className="text-xl text-white/80">Review and respond to pending connections</p>
+          <p className="text-gray-500 text-lg">Review and respond to connection requests</p>
         </motion.div>
 
-        <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-thin scrollbar-thumb-pink-500 scrollbar-track-indigo-900">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {requests.map((request, index) => (
             <motion.div
               key={request._id || index}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="min-w-[300px] bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-6 flex flex-col items-center"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="bg-white p-6 rounded-lg shadow-md border border-gray-200 flex flex-col items-center text-center"
             >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-400 shadow-lg"
-              >
+              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-blue-400 shadow-md">
                 <img
                   src={request.fromUserId.photoUrl}
                   alt={`${request.fromUserId.firstName} ${request.fromUserId.lastName}`}
                   className="w-full h-full object-cover"
                 />
-              </motion.div>
-
-              <div className="text-center mt-4">
-                <h2 className="text-xl font-semibold text-white">
-                  {request.fromUserId.firstName} {request.fromUserId.lastName}
-                </h2>
-                <p className="text-sm text-white/70 mt-1">{request.fromUserId.about}</p>
               </div>
 
-              <div className="mt-6 flex gap-4">
+              <div className="mt-4 w-full">
+                <h2 className="text-lg font-semibold text-gray-800 truncate">
+                  {request.fromUserId.firstName} {request.fromUserId.lastName}
+                </h2>
+                <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                  {request.fromUserId.about}
+                </p>
+              </div>
+
+              <div className="mt-5 flex gap-3 flex-wrap justify-center w-full">
                 <button
-                  className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold transition-all"
                   onClick={() => handleRequestAction(request.fromUserId._id, "accepted")}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-full text-sm font-medium transition"
                 >
                   Accept
                 </button>
                 <button
-                  className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-full font-semibold transition-all"
                   onClick={() => handleRequestAction(request.fromUserId._id, "rejected")}
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-full text-sm font-medium transition"
                 >
                   Reject
                 </button>
